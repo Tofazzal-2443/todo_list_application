@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todo_list_application/controller/todo_controller.dart';
+import 'package:todo_list_application/helper/route_helper.dart';
 import 'package:todo_list_application/pages/onboarding_page.dart';
 
 
@@ -15,13 +18,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: OnBoardingPage(),
+      initialRoute: RouteHelper.getOnBoardingRoute(),
+      getPages: RouteHelper.routes,
     );
   }
 }
