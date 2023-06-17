@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:todo_list_application/controller/todo_controller.dart';
+import 'package:todo_list_application/helper/route_helper.dart';
 import 'package:todo_list_application/models/onboarding_model.dart';
-import 'package:todo_list_application/pages/home_page.dart';
 
 import '../custom_widget.dart';
 import '../main.dart';
@@ -13,7 +15,6 @@ class OnBoardingPage extends StatefulWidget {
 }
 
 class _OnBoardingPageState extends State<OnBoardingPage> {
-
   int currentIndex = 0;
   late PageController _pageController;
 
@@ -22,7 +23,6 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     _pageController = PageController(initialPage: 0);
     super.initState();
   }
-
 
   @override
   void dispose() {
@@ -80,52 +80,50 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               onBoardingList.length,
-                  (index) => buildDot(index, context),
+              (index) => buildDot(index, context),
             ),
           ),
           //Button Section
           Expanded(
             flex: 2,
             child: SizedBox(
-
-                child: InkWell(
-                  onTap: () {
-                    if (currentIndex == onBoardingList.length - 1) {
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=> const HomePage()));
-                    }
-                    _pageController.nextPage(
-                        duration: const Duration(milliseconds: 100),
-                        curve: Curves.bounceIn);
-                  },
-                  child: Center(
-                    child: Container(
-                      height: 60,
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Theme.of(context).primaryColor,
+              child: InkWell(
+                onTap: () {
+                  if (currentIndex == onBoardingList.length - 1) {
+                    Get.find<TodoController>().setOnBoardingSelected(true);
+                    Get.toNamed(RouteHelper.getHomeRoute());
+                  }
+                  _pageController.nextPage(
+                      duration: const Duration(milliseconds: 100),
+                      curve: Curves.bounceIn);
+                },
+                child: Center(
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Center(
+                      child: Text(
+                        currentIndex == onBoardingList.length - 1
+                            ? "Continue"
+                            : "Next",
+                        style: boldStyle(25, Colors.white),
                       ),
-
-                        child: Center(
-                          child: Text(
-                            currentIndex == onBoardingList.length - 1
-                                ? "Continue"
-                                : "Next",
-                            style: boldStyle(25, Colors.white),
-                          ),
-                        ),
-                      ),
-                  ),
+                    ),
                   ),
                 ),
               ),
-
-
+            ),
+          ),
         ],
       ),
     );
   }
+
   Container buildDot(int index, BuildContext context) {
     return Container(
       height: 10,

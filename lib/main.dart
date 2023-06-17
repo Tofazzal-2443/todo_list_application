@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo_list_application/controller/todo_controller.dart';
+import 'package:todo_list_application/helper/init_function.dart';
 import 'package:todo_list_application/helper/route_helper.dart';
-import 'package:todo_list_application/pages/onboarding_page.dart';
 
 
 //Responsive UI use MediaQuery Global Key
 late Size mq;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initFunction();
   runApp(const MyApp());
 }
 
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      initialRoute: RouteHelper.getOnBoardingRoute(),
+      initialRoute:  Get.find<TodoController>().getOnBoardingSelected() != null ? RouteHelper.getHomeRoute() : RouteHelper.getOnBoardingRoute(),
       getPages: RouteHelper.routes,
     );
   }
