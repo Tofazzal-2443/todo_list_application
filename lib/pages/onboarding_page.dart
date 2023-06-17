@@ -87,7 +87,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           Expanded(
             flex: 2,
             child: SizedBox(
-              child: Center(
+
                 child: InkWell(
                   onTap: () {
                     if (currentIndex == onBoardingList.length - 1) {
@@ -97,27 +97,31 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
                         duration: const Duration(milliseconds: 100),
                         curve: Curves.bounceIn);
                   },
-                  child: Container(
-                    height: 60,
-                    width: double.infinity,
-                    margin: const EdgeInsets.symmetric(horizontal: 20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: Center(
-                      child: Text(
-                        currentIndex == onBoardingList.length - 1
-                            ? "Continue"
-                            : "Next",
-                        style: boldStyle(25, Colors.white),
+                  child: Center(
+                    child: Container(
+                      height: 60,
+                      width: double.infinity,
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: Theme.of(context).primaryColor,
                       ),
-                    ),
+
+                        child: Center(
+                          child: Text(
+                            currentIndex == onBoardingList.length - 1
+                                ? "Continue"
+                                : "Next",
+                            style: boldStyle(25, Colors.white),
+                          ),
+                        ),
+                      ),
+                  ),
                   ),
                 ),
               ),
-            ),
-          )
+
+
         ],
       ),
     );
