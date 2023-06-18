@@ -87,6 +87,13 @@ class _HomePageState extends State<HomePage> {
                             )
                         );
                       }
+                      Get.snackbar(
+                        "Successfully Add Your Note",
+                        "",
+                        colorText: Colors.white,
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.orange,
+                      );
                     },
                     child: todoController.isUpdateNote ? const Text('Update') : const Text("Add Note"),
                   );
@@ -114,6 +121,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () async {
                     todoController.setUpdateNoteStatus(false);
                     await showAddList(context);
+
 
                   },
                   icon: const Icon(
@@ -152,8 +160,8 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      decorationThickness: todo.isDone ? 2 : 0,
+                      fontWeight: FontWeight.w400,
+                      decorationThickness: 2,
                       decorationColor: Colors.orange,
                       decorationStyle: TextDecorationStyle.solid,
                       decoration: todo.isDone? TextDecoration.lineThrough : null,
@@ -171,17 +179,26 @@ class _HomePageState extends State<HomePage> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      //Edit Button
                       IconButton(
                         onPressed: () async{
                           todoController.setUpdateNoteStatus(true);
                           await showAddList(context, toDoModel: todo);
-
+                          Get.snackbar(
+                            "Successfully Update Your Note",
+                            "",
+                            colorText: Colors.white,
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Colors.orange,
+                          );
                         },
                         icon: const Icon(
                           Icons.edit,
                           color: Colors.black,
                         ),
                       ),
+
+                      //Delete Button
                       IconButton(
                         onPressed: () {
                           Get.dialog(
@@ -248,6 +265,13 @@ class _HomePageState extends State<HomePage> {
                                                     onPressed: () {
                                                       todoController.deleteNote(todo.id!);
                                                       Navigator.pop(context);
+                                                      Get.snackbar(
+                                                        "Successfully Delete Your Note",
+                                                        "",
+                                                        colorText: Colors.white,
+                                                        snackPosition: SnackPosition.BOTTOM,
+                                                        backgroundColor: Colors.orange,
+                                                      );
                                                     },
                                                   ),
                                                 ),
