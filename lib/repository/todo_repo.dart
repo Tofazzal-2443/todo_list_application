@@ -35,4 +35,9 @@ class TodoRepo{
       String noteId, Map<String, dynamic> map) {
     return _db.collection(AppConstants.collectionNote).doc(noteId).update(map);
   }
+
+  //Delete data
+  Future<void> deleteNote(String noteId) {
+    return _db.collection(AppConstants.collectionNote).doc(noteId).delete();
+  }
 }

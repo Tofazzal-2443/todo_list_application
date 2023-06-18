@@ -29,7 +29,8 @@ class _HomePageState extends State<HomePage> {
               TextEditingController();
           if (toDoModel != null) {
             _titleTextController.text = toDoModel.todoTitle ?? 'no data found';
-            _subTitleTextController.text = toDoModel.subTitle ?? 'no data found';
+            _subTitleTextController.text =
+                toDoModel.subTitle ?? 'no data found';
           }
           return StatefulBuilder(builder: (_, setState) {
             return AlertDialog(
@@ -62,22 +63,22 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         Navigator.of(context).pop();
-                        todoController.isUpdateNote ? todoController.updateNote(toDoModel!.id!,
-                            {
-                              'id': toDoModel.id,
-                              'subTitle': _subTitleTextController.text,
-                              'todoTitle': _titleTextController.text,
-                              'isDone': toDoModel.isDone,
-                            }) :
-                        todoController.addNote(
-                            ToDoModel(
-                              todoTitle: _titleTextController.text,
-                              subTitle: _subTitleTextController.text,
-                            )
-                        );
+                        todoController.isUpdateNote
+                            ? todoController.updateNote(toDoModel!.id!, {
+                                'id': toDoModel.id,
+                                'subTitle': _subTitleTextController.text,
+                                'todoTitle': _titleTextController.text,
+                                'isDone': toDoModel.isDone,
+                              })
+                            : todoController.addNote(ToDoModel(
+                                todoTitle: _titleTextController.text,
+                                subTitle: _subTitleTextController.text,
+                              ));
                       }
                     },
-                    child: todoController.isUpdateNote ? Text('Update') : Text("Add Note"),
+                    child: todoController.isUpdateNote
+                        ? Text('Update')
+                        : Text("Add Note"),
                   );
                 }),
               ],
@@ -175,8 +176,123 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 //Delete IconButton
                                 IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
+                                  onPressed: () {
+                                    Get.dialog(
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 40),
+                                            child: Container(
+                                              decoration: const BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(20),
+                                                ),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(20.0),
+                                                child: Material(
+                                                  child: Column(
+                                                    children: [
+                                                      const SizedBox(
+                                                          height: 10),
+                                                      const Text(
+                                                        "Are you sure want to delete?",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: 24),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 15),
+
+                                                      //Buttons
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child:
+                                                                ElevatedButton(
+                                                              child: const Text(
+                                                                'NO',
+                                                              ),
+                                                              style:
+                                                                  ElevatedButton
+                                                                      .styleFrom(
+                                                                minimumSize:
+                                                                    const Size(
+                                                                        0, 45),
+                                                                primary: Colors
+                                                                    .amber,
+                                                                onPrimary:
+                                                                    const Color(
+                                                                        0xFFFFFFFF),
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8),
+                                                                ),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 10),
+                                                          Expanded(
+                                                            child:
+                                                                ElevatedButton(
+                                                              child: const Text(
+                                                                'YES',
+                                                              ),
+                                                              style:
+                                                                  ElevatedButton
+                                                                      .styleFrom(
+                                                                minimumSize:
+                                                                    const Size(
+                                                                        0, 45),
+                                                                primary: Colors
+                                                                    .amber,
+                                                                onPrimary:
+                                                                    const Color(
+                                                                        0xFFFFFFFF),
+                                                                shape:
+                                                                    RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8),
+                                                                ),
+                                                              ),
+                                                              onPressed: () {
+                                                                todoController
+                                                                    .deleteNote(
+                                                                        todo.id!);
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  icon: Icon(
                                     Icons.delete,
                                     color: Colors.black,
                                   ),

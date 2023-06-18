@@ -45,5 +45,10 @@ class TodoController extends GetxController implements GetxService {
     update();
   }
 
+  //Delete data
+  Future<void> deleteNote(String noteId) async {
+    return todoRepo.deleteNote(noteId);
+  }
+
 
 }
