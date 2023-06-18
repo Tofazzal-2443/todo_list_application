@@ -30,4 +30,9 @@ class TodoRepo{
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllNote() =>
       _db.collection(AppConstants.collectionNote).snapshots();
 
+  //Update Data
+  Future<void> updateNote(
+      String noteId, Map<String, dynamic> map) {
+    return _db.collection(AppConstants.collectionNote).doc(noteId).update(map);
+  }
 }

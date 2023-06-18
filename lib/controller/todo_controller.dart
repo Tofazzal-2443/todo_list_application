@@ -32,4 +32,18 @@ class TodoController extends GetxController implements GetxService {
       update();
     });
   }
+  //Update Data
+  bool _isUpdateNote = false;
+  bool get isUpdateNote => _isUpdateNote;
+
+  Future<void> updateNote(String noteId, Map<String, dynamic> map) async {
+    return todoRepo.updateNote(noteId, map);
+  }
+
+  void setUpdateNoteStatus (bool value) {
+    _isUpdateNote = value;
+    update();
+  }
+
+
 }

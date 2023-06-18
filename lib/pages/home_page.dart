@@ -23,13 +23,13 @@ class _HomePageState extends State<HomePage> {
     return await showDialog(
         context: context,
         builder: (context) {
-          final TextEditingController titleTextController =
+          final TextEditingController _titleTextController =
               TextEditingController();
-          final TextEditingController subTitleTextController =
+          final TextEditingController _subTitleTextController =
               TextEditingController();
           if (toDoModel != null) {
-            titleTextController.text = toDoModel.todoTitle ?? 'no data found';
-            subTitleTextController.text = toDoModel.subTitle ?? 'no data found';
+            _titleTextController.text = toDoModel.todoTitle ?? 'no data found';
+            _subTitleTextController.text = toDoModel.subTitle ?? 'no data found';
           }
           return StatefulBuilder(builder: (_, setState) {
             return AlertDialog(
@@ -42,13 +42,13 @@ class _HomePageState extends State<HomePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
-                      controller: titleTextController,
+                      controller: _titleTextController,
                       decoration: const InputDecoration(
                         hintText: "Title",
                       ),
                     ),
                     TextField(
-                      controller: subTitleTextController,
+                      controller: _subTitleTextController,
                       decoration: const InputDecoration(
                         hintText: "Sub Title",
                       ),
@@ -62,15 +62,22 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         Navigator.of(context).pop();
+                        todoController.isUpdateNote ? todoController.updateNote(toDoModel!.id!,
+                            {
+                              'id': toDoModel.id,
+                              'subTitle': _subTitleTextController.text,
+                              'todoTitle': _titleTextController.text,
+                              'isDone': toDoModel.isDone,
+                            }) :
                         todoController.addNote(
-                          ToDoModel(
-                            todoTitle: titleTextController.text,
-                            subTitle: subTitleTextController.text,
-                          ),
+                            ToDoModel(
+                              todoTitle: _titleTextController.text,
+                              subTitle: _subTitleTextController.text,
+                            )
                         );
                       }
                     },
-                    child: const Text("Add Note"),
+                    child: todoController.isUpdateNote ? Text('Update') : Text("Add Note"),
                   );
                 }),
               ],
@@ -157,7 +164,10 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 //Edit IconButton
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    todoController.setUpdateNoteStatus(true);
+                                    await showAddList(context, toDoModel: todo);
+                                  },
                                   icon: const Icon(
                                     Icons.edit,
                                     color: Colors.black,
