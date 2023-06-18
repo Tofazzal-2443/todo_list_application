@@ -26,4 +26,8 @@ class TodoRepo{
     return noteDoc.set(toDoModel.toMap());
   }
 
+  //Get data from Firebase
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllNote() =>
+      _db.collection(AppConstants.collectionNote).snapshots();
+
 }

@@ -19,4 +19,17 @@ class TodoController extends GetxController implements GetxService {
   Future<void> addNote(ToDoModel toDoModel) {
     return todoRepo.addNote(toDoModel);
   }
+
+  //Get data from Firebase
+  List<ToDoModel>? _todoList;
+  List<ToDoModel>? get todoList => _todoList;
+
+  Future<void> getAllNote() async {
+    _todoList = [];
+    todoRepo.getAllNote().listen((snapshot) {
+      _todoList = List.generate(snapshot.docs.length,
+              (index) => ToDoModel.fromMap(snapshot.docs[index].data()));
+      update();
+    });
+  }
 }

@@ -108,65 +108,79 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         //body Section
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListTile(
-            onTap: () {},
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            tileColor: Colors.cyan,
-            leading: Checkbox(
-              value: isCheck,
-              onChanged: (value) {
-                setState(() {
-                  isCheck = value!;
-                });
-              },
-            ),
-            title: const Text(
-              "Title",
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                decorationThickness: 2,
-                decorationColor: Colors.orange,
-                decorationStyle: TextDecorationStyle.solid,
-                decoration: TextDecoration.lineThrough,
+        body: todoController.todoList != null
+            ? todoController.todoList!.isNotEmpty
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: todoController.todoList!.length,
+                    itemBuilder: (context, index) {
+                      final todo = todoController.todoList![index];
+                      return SizedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            onTap: () {},
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            tileColor: Colors.cyan,
+                            leading: Checkbox(
+                              value: isCheck,
+                              onChanged: (value) {
+                                setState(() {
+                                  isCheck = value!;
+                                });
+                              },
+                            ),
+                            title: Text(
+                              todo.todoTitle ?? 'no data found',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                decorationThickness: 2,
+                                decorationColor: Colors.orange,
+                                decorationStyle: TextDecorationStyle.solid,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                            subtitle: Text(
+                              todo.subTitle ?? 'not data found',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                //Edit IconButton
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                //Delete IconButton
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    })
+                : const Center(child: Text('No Data Found'))
+            : const Center(
+                child: CircularProgressIndicator(),
               ),
-            ),
-            subtitle: const Text(
-              "Sub Title",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                //Edit IconButton
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.edit,
-                    color: Colors.black,
-                  ),
-                ),
-                //Delete IconButton
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.delete,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       );
     });
   }

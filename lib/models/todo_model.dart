@@ -15,5 +15,13 @@ class ToDoModel {
       'isDone': isDone,
     };
   }
+  //Get Data from Firebase
+  factory ToDoModel.fromMap(Map<String,dynamic>map)=>ToDoModel(
+    id: map['id'],
+    subTitle: map['subTitle'],
+    todoTitle: map['todoTitle'],
+    isDone: map['isDone'],
+  );
+
 }
 
