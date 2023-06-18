@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_list_application/models/todo_model.dart';
 import 'package:todo_list_application/util/app_constants.dart';
 
 class TodoRepo{
@@ -12,6 +14,16 @@ class TodoRepo{
 
   bool? getOnBoardingSelected () {
     return sharedPreferences.getBool(AppConstants.onBoarding);
+  }
+
+  //Firebase
+  final _db = FirebaseFirestore.instance;
+
+  //Send data to Firebase
+  Future<void> addNote(ToDoModel toDoModel) {
+    final noteDoc = _db.collection(AppConstants.collectionNote).doc();
+    toDoModel.id = noteDoc.id;
+    return noteDoc.set(toDoModel.toMap());
   }
 
 }
