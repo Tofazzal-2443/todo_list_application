@@ -13,8 +13,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
+  loadData() async{
+    await Get.find<TodoController>().getAllNote();
+  }
   //Checkbox
   bool isCheck = false;
+
 
   // Dialog Box Code
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -23,15 +32,15 @@ class _HomePageState extends State<HomePage> {
     return await showDialog(
         context: context,
         builder: (context) {
-          final TextEditingController _titleTextController =
-              TextEditingController();
-          final TextEditingController _subTitleTextController =
-              TextEditingController();
-          if (toDoModel != null) {
-            _titleTextController.text = toDoModel.todoTitle ?? 'no data found';
-            _subTitleTextController.text =
-                toDoModel.subTitle ?? 'no data found';
+          final TextEditingController titleTextController =
+          TextEditingController();
+          final TextEditingController subTitleTextController =
+          TextEditingController();
+          if(toDoModel != null) {
+            titleTextController.text = toDoModel.todoTitle ?? 'no data found';
+            subTitleTextController.text = toDoModel.subTitle ?? 'no data found';
           }
+          bool isChecked = false;
           return StatefulBuilder(builder: (_, setState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
@@ -43,13 +52,13 @@ class _HomePageState extends State<HomePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
-                      controller: _titleTextController,
+                      controller: titleTextController,
                       decoration: const InputDecoration(
                         hintText: "Title",
                       ),
                     ),
                     TextField(
-                      controller: _subTitleTextController,
+                      controller: subTitleTextController,
                       decoration: const InputDecoration(
                         hintText: "Sub Title",
                       ),
@@ -60,25 +69,26 @@ class _HomePageState extends State<HomePage> {
               actions: [
                 GetBuilder<TodoController>(builder: (todoController) {
                   return TextButton(
-                    onPressed: () async {
+                    onPressed: () async{
+
                       if (_formKey.currentState!.validate()) {
                         Navigator.of(context).pop();
-                        todoController.isUpdateNote
-                            ? todoController.updateNote(toDoModel!.id!, {
-                                'id': toDoModel.id,
-                                'subTitle': _subTitleTextController.text,
-                                'todoTitle': _titleTextController.text,
-                                'isDone': toDoModel.isDone,
-                              })
-                            : todoController.addNote(ToDoModel(
-                                todoTitle: _titleTextController.text,
-                                subTitle: _subTitleTextController.text,
-                              ));
+                        todoController.isUpdateNote ? todoController.updateNote(toDoModel!.id!,
+                            {
+                              'id': toDoModel.id,
+                              'subTitle': subTitleTextController.text,
+                              'todoTitle': titleTextController.text,
+                              'isDone': toDoModel.isDone,
+                            }) :
+                        todoController.addNote(
+                            ToDoModel(
+                              todoTitle: titleTextController.text,
+                              subTitle: subTitleTextController.text,
+                            )
+                        );
                       }
                     },
-                    child: todoController.isUpdateNote
-                        ? Text('Update')
-                        : Text("Add Note"),
+                    child: todoController.isUpdateNote ? const Text('Update') : const Text("Add Note"),
                   );
                 }),
               ],
@@ -91,7 +101,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return GetBuilder<TodoController>(builder: (todoController) {
       return Scaffold(
-        //App bar Section
         appBar: AppBar(
           title: Text(
             "All ToDos",
@@ -103,8 +112,9 @@ class _HomePageState extends State<HomePage> {
               child: CircleAvatar(
                 child: IconButton(
                   onPressed: () async {
-                    //todoController.setUpdateNoteStatus(false);
+                    todoController.setUpdateNoteStatus(false);
                     await showAddList(context);
+
                   },
                   icon: const Icon(
                     Icons.add,
@@ -115,198 +125,159 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        //body Section
-        body: todoController.todoList != null
-            ? todoController.todoList!.isNotEmpty
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: todoController.todoList!.length,
-                    itemBuilder: (context, index) {
-                      final todo = todoController.todoList![index];
-                      return SizedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            onTap: () {},
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            tileColor: Colors.cyan,
-                            leading: Checkbox(
-                              value: isCheck,
-                              onChanged: (value) {
-                                setState(() {
-                                  isCheck = value!;
-                                });
-                              },
-                            ),
-                            title: Text(
-                              todo.todoTitle ?? 'no data found',
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                decorationThickness: 2,
-                                decorationColor: Colors.orange,
-                                decorationStyle: TextDecorationStyle.solid,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                            subtitle: Text(
-                              todo.subTitle ?? 'not data found',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                //Edit IconButton
-                                IconButton(
-                                  onPressed: () async {
-                                    todoController.setUpdateNoteStatus(true);
-                                    await showAddList(context, toDoModel: todo);
-                                  },
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                //Delete IconButton
-                                IconButton(
-                                  onPressed: () {
-                                    Get.dialog(
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 40),
-                                            child: Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(20),
-                                                ),
-                                              ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(20.0),
-                                                child: Material(
-                                                  child: Column(
-                                                    children: [
-                                                      const SizedBox(
-                                                          height: 10),
-                                                      const Text(
-                                                        "Are you sure want to delete?",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: 24),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 15),
+        body: todoController.todoList != null ? todoController.todoList!.isNotEmpty ? ListView.builder(
+          shrinkWrap: true,
+          itemCount: todoController.todoList!.length,
+          itemBuilder: (context, index) {
+            final todo = todoController.todoList![index];
+            return  SizedBox(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  onTap: () {},
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  tileColor: Colors.cyan,
+                  leading: Checkbox(
+                    onChanged: (value) {
+                      todoController.updateNote(todo.id!, {
+                        'isDone': value,
+                      });
+                    },
+                    value: todo.isDone,
+                  ),
+                  title: Text(
+                    todo.todoTitle ?? 'no data found',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      decorationThickness: todo.isDone ? 2 : 0,
+                      decorationColor: Colors.orange,
+                      decorationStyle: TextDecorationStyle.solid,
+                      decoration: todo.isDone? TextDecoration.lineThrough : null,
+                    ),
+                  ),
+                  subtitle: Text(
+                    todo.subTitle?? 'not data found',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
 
-                                                      //Buttons
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child:
-                                                                ElevatedButton(
-                                                              child: const Text(
-                                                                'NO',
-                                                              ),
-                                                              style:
-                                                                  ElevatedButton
-                                                                      .styleFrom(
-                                                                minimumSize:
-                                                                    const Size(
-                                                                        0, 45),
-                                                                primary: Colors
-                                                                    .amber,
-                                                                onPrimary:
-                                                                    const Color(
-                                                                        0xFFFFFFFF),
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8),
-                                                                ),
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 10),
-                                                          Expanded(
-                                                            child:
-                                                                ElevatedButton(
-                                                              child: const Text(
-                                                                'YES',
-                                                              ),
-                                                              style:
-                                                                  ElevatedButton
-                                                                      .styleFrom(
-                                                                minimumSize:
-                                                                    const Size(
-                                                                        0, 45),
-                                                                primary: Colors
-                                                                    .amber,
-                                                                onPrimary:
-                                                                    const Color(
-                                                                        0xFFFFFFFF),
-                                                                shape:
-                                                                    RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8),
-                                                                ),
-                                                              ),
-                                                              onPressed: () {
-                                                                todoController
-                                                                    .deleteNote(
-                                                                        todo.id!);
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                            ),
-                                                          ),
-                                                        ],
+                    ),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () async{
+                          todoController.setUpdateNoteStatus(true);
+                          await showAddList(context, toDoModel: todo);
+
+                        },
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Colors.black,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Get.dialog(
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Material(
+                                        child: Column(
+                                          children: [
+                                            const SizedBox(height: 10),
+                                            const Text(
+                                              "Are you sure want to delete?",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(fontSize: 24),
+                                            ),
+                                            const SizedBox(height: 15),
+
+                                            //Buttons
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      minimumSize: const Size(0, 45),
+                                                      primary: Colors.amber,
+                                                      onPrimary: const Color(0xFFFFFFFF),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8),
                                                       ),
-                                                    ],
+                                                    ),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                      'NO',
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
+                                                const SizedBox(width: 10),
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    child: const Text(
+                                                      'YES',
+                                                    ),
+                                                    style: ElevatedButton.styleFrom(
+                                                      minimumSize: const Size(0, 45),
+                                                      primary: Colors.amber,
+                                                      onPrimary: const Color(0xFFFFFFFF),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+                                                      todoController.deleteNote(todo.id!);
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.delete,
-                                    color: Colors.black,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
+                          );
+
+
+                        },
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.black,
                         ),
-                      );
-                    })
-                : const Center(child: Text('No Data Found'))
-            : const Center(
-                child: CircularProgressIndicator(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+            );
+          },
+        ) :
+        const Center(child: Text('No Data Found')) : const Center(child: CircularProgressIndicator(),),
       );
     });
   }
